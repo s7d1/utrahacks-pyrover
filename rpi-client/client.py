@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+from itertools import islice # for slicing an iterator
 
 def camera_frame():
     capture = cv2.VideoCapture(0)
@@ -59,7 +60,7 @@ if __name__ == '__main__':
     project = rf.workspace().project("firebot")
     model = project.version(1).model
     
-    for frame in camera_frame():
+    for frame in islice(camera_frame(), 1): # for testing purposes to not use up all allowed inference requests
         write_frame_to_file(frame, "frame.jpeg")
         # Add a delay to ensure the file is fully written
         time.sleep(0.5)
