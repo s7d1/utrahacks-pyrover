@@ -69,7 +69,7 @@ if __name__ == '__main__':
             continue
         
         # Send the frame to the server at camera endpoint
-        response = requests.post('http://15-222-245-42:80/camera', json={'frame': frame})
+        response = requests.post('http://15-222-245-42:80/camera', data=frame)
         if response.status_code != 200:
                 print('Failed to send frame: ', response.text)
 
