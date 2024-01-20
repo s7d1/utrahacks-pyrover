@@ -3,10 +3,9 @@ import cv2
 from roboflow import Roboflow
 import os
 from dotenv import load_dotenv
-
-
-load_dotenv()
-ROBOFLOW_KEY = os.getenv('roboflow_key')
+from datetime import datetime
+import requests
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 def camera_frame():
     capture = cv2.VideoCapture(0)
@@ -20,8 +19,7 @@ def camera_frame():
         if not success:
             break
         yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf + b"\r\n"
-
-       
+  
 def write_frame_to_file(frame, file_path):
     # Extract the image data from the multipart frame
     image_data = frame.split(b"\r\n\r\n")[1].rsplit(b"\r\n", 1)[0]
@@ -29,32 +27,49 @@ def write_frame_to_file(frame, file_path):
     with open(file_path, 'wb') as f:
         f.write(image_data)
 
-
-rf = Roboflow(api_key=ROBOFLOW_KEY)
-project = rf.workspace().project("firebot")
-model = project.version(1).model
-
-def fire_detection():
+def fire_detection(frame, frame_path):
     '''
     Detects fire in the frame and creates a POST request to the server with the frame and the prediction result.
     '''
+    prediction = model.predict(frame_path).json()
+    timestamp = datetime.now()
+    if prediction['predictions'][0]['top'] == "fire":
+        print("Fire detected")
+        mp_encoder = MultipartEncoder(
+            fields={
+                'confidence': str(prediction['predictions'][0]['confidence']),
+                'time': str(timestamp),
+                'location': ("Latitude, Longitude"),
+                'frame': (frame_path, open(frame_path, 'rb'))
+            }
+        )
+        response = requests.post('http://15-222-245-42:80/fire', data=mp_encoder, headers={'Content-Type': mp_encoder.content_type}) 
+        if response.status_code != 200:
+            print('Failed to send frame: ', response.text)
+            return
+        print(response.text)
+    else:
+        print("No fire detected")
+
+if __name__ == '__main__':
+    
+    load_dotenv()
+    ROBOFLOW_KEY = os.getenv('roboflow_key')
+    rf = Roboflow(api_key=ROBOFLOW_KEY)
+    project = rf.workspace().project("firebot")
+    model = project.version(1).model
+    
     for frame in camera_frame():
         write_frame_to_file(frame, "frame.jpeg")
-        
-        # Check if the file is written and is a valid image file
+        # Add a delay to ensure the file is fully written
+        time.sleep(0.5)
         if not os.path.exists("frame.jpeg"):
             print("File not found.")
             continue
+        
+        # Send the frame to the server at camera endpoint
+        response = requests.post('http://15-222-245-42:80/camera', json={'frame': frame})
+        if response.status_code != 200:
+                print('Failed to send frame: ', response.text)
 
-        # Add a delay to ensure the file is fully written
-        time.sleep(1)
-
-        prediction = model.predict("frame.jpeg").json()
-        if prediction['predictions'][0]['top'] == "fire":
-            post_obj = {'confidence' : prediction['predictions'][0]['confidence'], 'time' : prediction['predictions'][0]['time']}
-            
-            return post_obj # change this to post the object on ec2 instance along with image.
-        else:
-            return "No fire detected"
-
-print(fire_detection())
+        fire_detection(frame, "frame.jpeg")
