@@ -11,7 +11,7 @@ import serial
 from random import uniform
 from datetime import datetime
 
-port = '/dev/ttyACM0'
+port = '/dev/ttyUSB0'
 
 ser = serial.Serial(port, 9600, timeout=1)
 
@@ -42,6 +42,8 @@ def fire_detection(frame_path):
     '''
     Detects fire in the frame and creates a POST request to the server with the frame and the prediction result.
     '''
+    send_string = "stop"
+    ser.write(send_string.encode('utf-8'))
     prediction = model.predict(frame_path).json()
     timestamp = datetime.now()
     if prediction['predictions'][0]['top'] == "fire":
@@ -62,12 +64,12 @@ def fire_detection(frame_path):
             return
         print(response.text)
 
-        send_string = '1'
+        send_string = 'fire'
         ser.write(send_string.encode('utf-8'))
 
     else:
         print("No fire detected")
-        send_string = '0'
+        send_string = 'not_fire'
         ser.write(send_string.encode('utf-8'))
 
 if __name__ == '__main__':
