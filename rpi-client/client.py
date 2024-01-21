@@ -38,10 +38,10 @@ def fire_detection(frame_path):
         print("Fire detected")
         mp_encoder = MultipartEncoder(
             fields={
-                'confidence': prediction['predictions'][0]['confidence'],
+                'confidence': str(prediction['predictions'][0]['confidence']),
                 'time': str(timestamp),
-                'position': [43.6606491, -79.3964662],
-                'temperature': 100.0,
+                'position': [str(43.6606491), str(-79.3964662)],
+                'temperature': str(100.0),
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
         )
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     project = rf.workspace().project("firebot")
     model = project.version(1).model
     
-    for frame in islice(camera_frame(), 1): # for testing purposes to not use up all allowed inference requests
+    for frame in islice(camera_frame(), 5): # for testing purposes to not use up all allowed inference requests
         frame_path = "live.jpeg"
         write_frame_to_file(frame, frame_path)
         # Add a delay to ensure the file is fully written
