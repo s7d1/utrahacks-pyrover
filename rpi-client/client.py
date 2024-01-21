@@ -40,11 +40,12 @@ def fire_detection(frame_path):
             fields={
                 'confidence': str(prediction['predictions'][0]['confidence']),
                 'time': str(timestamp),
-                'location': ("Latitude, Longitude"),
+                'position': ("Latitude, Longitude"),
+                'temperature': str(100),
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
         )
-        response = requests.post('http://15.222.245.42:80/fire', data=mp_encoder, headers={'Content-Type': mp_encoder.content_type}) 
+        response = requests.post('http://15.222.245.42:80/fire-detected', data=mp_encoder, headers={'Content-Type': mp_encoder.content_type}) 
         if response.status_code != 200:
             print('Failed to send frame: ', response.text)
             return

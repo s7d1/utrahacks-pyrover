@@ -1,5 +1,7 @@
 from flask import Flask, Response, render_template, request
 import time
+from werkzeug.datastructures import FileStorage
+
 
 
 app = Flask(__name__)
@@ -16,7 +18,7 @@ def alert_page(id):
 
 
 live_frame = None
-
+alerts = []
 
 def gen_frames():
     global live_frame
@@ -45,4 +47,29 @@ def camera():
 
 @app.route("/fire-detected", methods=['POST'])
 def fire():
-    pass  # Replace with the actual method to receive the POST request
+    global alerts
+
+    # Access form data
+    confidence = request.form.get('confidence')
+    time = request.form.get('time')
+    position = request.form.get('position')
+    temperature = request.form.get('temperature')
+    
+    # Access the file
+    frame = request.files.get('frame')
+    id = get_id()
+    if frame and isinstance(frame, FileStorage):
+        frame.save("./static/fire/" + str(id) + ".jpeg")
+    alerts.append({
+        "id": id,
+        "confidence": confidence,
+        "time": time,
+        "position": position,
+        "temperature": temperature,
+        "file_path": "./static/fire/" + str(id) + ".jpeg"
+    })
+
+
+def get_id():
+    global alerts
+    return len(alerts)
