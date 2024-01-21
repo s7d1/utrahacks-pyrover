@@ -118,19 +118,21 @@ void loop() {
 
   
   // Radio signal reading ============================================================================================================================================================================
-  char msg1[4];
+  char data1[20] = "";
+  String mssg1 = "";
  
   if ( radio.available() )
   {
     Serial.println("reading radio");
-    radio.read( msg1, 1 );
-    Serial.println(*msg1);
+    radio.read( data1, sizeof(data1) );
+    Serial.println(data1);
+    msg1 = data1;
 
   }
-  if (strncmp(msg1, "rite", 4)){
+  if (msg1 == "right"){
     control = true;
   }
-  else if(strncmp(msg1, "left", 4)){
+  else if(msg1 == "left"){
     control = false;
   }
 
