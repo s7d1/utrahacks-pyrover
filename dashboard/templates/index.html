@@ -49,6 +49,12 @@
             maxZoom: 20,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map)
+        alerts.forEach(alert => {
+            let marker = L.marker(alert.position).addTo(map)
+            marker.on("click", () => {
+                window.location.href = `/alert/${alert.id}`
+            })
+        })
 
         let toggleMap = () => {
             document.querySelector("#camera-button").classList.toggle("active")

@@ -12,8 +12,8 @@ alerts = [{
     "time": "2024-01-20 20:54:41.786741",
     "position": [43.6607378, -79.396058],
     "temperature": 100.0,
-    "file_path": "/static/0.jpeg"
-    }]
+    "file_path": "/static/fire/0.jpeg"
+}]
 
 
 @app.route("/")
@@ -72,7 +72,7 @@ def fire():
         "time": time,
         "position": position,
         "temperature": temperature,
-        "file_path": "/static/" + str(id) + ".jpeg"
+        "file_path": "/static/fire/" + str(id) + ".jpeg"
     })
     return "Alert received"
 
