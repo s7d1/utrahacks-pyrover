@@ -7,6 +7,13 @@ from datetime import datetime
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from itertools import islice # for slicing an iterator
+import serial
+
+port = '/dev/ttyACM0'
+
+ser = serial.Serial(port, 9600, timeout=1)
+
+ser.flush()
 
 def camera_frame():
     capture = cv2.VideoCapture(0)
@@ -50,8 +57,14 @@ def fire_detection(frame_path):
             print('Failed to send frame: ', response.text)
             return
         print(response.text)
+
+        send_string = '1'
+        ser.write(send_string.encode('utf-8'))
+
     else:
         print("No fire detected")
+        send_string = '0'
+        ser.write(send_string.encode('utf-8'))
 
 if __name__ == '__main__':
     
