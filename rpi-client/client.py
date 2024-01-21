@@ -7,6 +7,8 @@ from datetime import datetime
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from itertools import islice # for slicing an iterator
+from random import uniform
+
 
 def camera_frame():
     capture = cv2.VideoCapture(0)
@@ -40,8 +42,8 @@ def fire_detection(frame_path):
             fields={
                 'confidence': str(prediction['predictions'][0]['confidence']),
                 'time': str(timestamp),
-                'latitude': str(43.6606491),
-                'longitude': str(-79.3964662),
+                'latitude': str(43.6606491 + uniform(-0.00003, 0.00003)),
+                'longitude': str(-79.3964662 + uniform(-0.00003, 0.00003)),
                 'temperature': str(100.0),
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
