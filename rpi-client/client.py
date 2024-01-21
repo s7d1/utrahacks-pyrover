@@ -40,7 +40,8 @@ def fire_detection(frame_path):
             fields={
                 'confidence': str(prediction['predictions'][0]['confidence']),
                 'time': str(timestamp),
-                'position': [str(43.6606491), str(-79.3964662)],
+                'latitude': str(43.6606491),
+                'longitude': str(-79.3964662),
                 'temperature': str(100.0),
                 'frame': (frame_path, open(frame_path, 'rb'))
             }

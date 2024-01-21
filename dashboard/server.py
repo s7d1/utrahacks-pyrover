@@ -10,7 +10,8 @@ alerts = [{
     "id": 0,
     "confidence": 0.99,
     "time": "2024-01-20 20:54:41.786741",
-    "position": [43.6607378, -79.396058],
+    "latitude": 43.6607378,
+    "longitude": -79.396058,
     "temperature": 100.0,
     "file_path": "/static/fire/0.jpeg"
 }]
@@ -58,7 +59,8 @@ def fire():
     # Access form data
     confidence = request.form.get('confidence')
     time = request.form.get('time')
-    position = request.form.get('position')
+    latitude = request.form.get('latitude')
+    longitude = request.form.get('longitude')
     temperature = request.form.get('temperature')
     
     # Access the file
@@ -70,7 +72,8 @@ def fire():
         "id": id,
         "confidence": float(confidence),
         "time": time,
-        "position": [float(p) for p in position],
+        "latitude": float(latitude),
+        "longitude": float(longitude),
         "temperature": float(temperature),
         "file_path": "/static/fire/" + str(id) + ".jpeg"
     })
