@@ -5,20 +5,26 @@ from werkzeug.datastructures import FileStorage
 
 
 app = Flask(__name__)
+live_frame = None
+alerts = [{
+    "id": 0,
+    "confidence": 0.99,
+    "time": "2024-01-20 20:54:41.786741",
+    "position": [43.6607378, -79.396058],
+    "temperature": 100.0,
+    "file_path": "/static/0.jpeg"
+    }]
 
 
 @app.route("/")
 def index_page():
-    return render_template("index.html")
+    return render_template("index.html", alerts=alerts)
 
 
 @app.route("/alert/<int:id>")
 def alert_page(id):
-    return render_template("alert.html")
+    return render_template("alert.html", alert=alerts[id])
 
-
-live_frame = None
-alerts = []
 
 def gen_frames():
     global live_frame
@@ -66,7 +72,7 @@ def fire():
         "time": time,
         "position": position,
         "temperature": temperature,
-        "file_path": "./static/" + str(id) + ".jpeg"
+        "file_path": "/static/" + str(id) + ".jpeg"
     })
     return "Alert received"
 

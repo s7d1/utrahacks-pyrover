@@ -43,6 +43,7 @@
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
     <script>
+        let alerts = {{ alerts | tojson }}
         let map = L.map("map").setView([43.6607255, -79.3964399], 19);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
@@ -54,20 +55,6 @@
             document.querySelector("#map-button").classList.toggle("active")
             document.querySelector("#camera").classList.toggle("d-none")
             document.querySelector("#map").classList.toggle("d-none")
-        }
-
-        let showMap = () => {
-            document.querySelector("#camera-button").classList.remove("active")
-            document.querySelector("#map-button").classList.add("active")
-            document.querySelector("#camera").setAttribute("hidden", true)
-            document.querySelector("#map").setAttribute("hidden", false)
-        }
-
-        let showCamera = () => {
-            document.querySelector("#camera-button").classList.add("active")
-            document.querySelector("#map-button").classList.remove("active")
-            document.querySelector("#camera").setAttribute("hidden", false)
-            document.querySelector("#map").setAttribute("hidden", true)
         }
     </script>
 </body>

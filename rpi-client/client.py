@@ -38,10 +38,10 @@ def fire_detection(frame_path):
         print("Fire detected")
         mp_encoder = MultipartEncoder(
             fields={
-                'confidence': str(prediction['predictions'][0]['confidence']),
+                'confidence': prediction['predictions'][0]['confidence'],
                 'time': str(timestamp),
-                'position': ("Latitude, Longitude"),
-                'temperature': str(100),
+                'position': [43.6606491, -79.3964662],
+                'temperature': 100.0,
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
         )
