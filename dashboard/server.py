@@ -68,6 +68,7 @@ def fire():
         "temperature": temperature,
         "file_path": "./static/" + str(id) + ".jpeg"
     })
+    return "Alert received"
 
 
 def get_id():
