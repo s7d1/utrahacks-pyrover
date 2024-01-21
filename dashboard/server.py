@@ -68,10 +68,10 @@ def fire():
         frame.save("./static/fire/" + str(id) + ".jpeg")
     alerts.append({
         "id": id,
-        "confidence": confidence,
+        "confidence": float(confidence),
         "time": time,
-        "position": position,
-        "temperature": temperature,
+        "position": [float(p) for p in position],
+        "temperature": float(temperature),
         "file_path": "/static/fire/" + str(id) + ".jpeg"
     })
     return "Alert received"
