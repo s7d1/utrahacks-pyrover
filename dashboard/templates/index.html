@@ -24,10 +24,16 @@
             </div>
         </nav>
         <div class="container row flex-grow-1 mw-100">
-            <div class="col-2 list-group p-1">
+            <div class="col-2 list-group p-1 bg-light">
                 <button class="list-group-item list-group-item-action active">Vehicle 1</button>
             </div>
-            <div class="col h-100" id="map">
+            <div class="col h-100 d-flex flex-column align-items-center p-2" style="gap: 10px">
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="camera-button" onclick="toggleMap()">Camera</button>
+                    <button class="btn btn-secondary active" id="map-button" onclick="toggleMap()">Map</button>
+                </div>
+                <div class="flex-grow-1 w-100" id="map"></div>
+                <img class="d-none" id="camera" src="/camera" />
             </div>
         </div>
     </div>
@@ -42,6 +48,27 @@
             maxZoom: 20,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map)
+
+        let toggleMap = () => {
+            document.querySelector("#camera-button").classList.toggle("active")
+            document.querySelector("#map-button").classList.toggle("active")
+            document.querySelector("#camera").classList.toggle("d-none")
+            document.querySelector("#map").classList.toggle("d-none")
+        }
+
+        let showMap = () => {
+            document.querySelector("#camera-button").classList.remove("active")
+            document.querySelector("#map-button").classList.add("active")
+            document.querySelector("#camera").setAttribute("hidden", true)
+            document.querySelector("#map").setAttribute("hidden", false)
+        }
+
+        let showCamera = () => {
+            document.querySelector("#camera-button").classList.add("active")
+            document.querySelector("#map-button").classList.remove("active")
+            document.querySelector("#camera").setAttribute("hidden", false)
+            document.querySelector("#map").setAttribute("hidden", true)
+        }
     </script>
 </body>
 </html>
