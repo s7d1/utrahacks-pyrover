@@ -33,7 +33,7 @@
                     <button class="btn btn-secondary active" id="map-button" onclick="toggleMap()">Map</button>
                 </div>
                 <div class="flex-grow-1 w-100" id="map"></div>
-                <img class="d-none" id="camera" src="/camera" />
+                <img class="w-100 d-none" id="camera" src="/camera" />
             </div>
         </div>
     </div>
@@ -43,31 +43,24 @@
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
     <script>
+        let alerts = {{ alerts | tojson }}
         let map = L.map("map").setView([43.6607255, -79.3964399], 19);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map)
+        alerts.forEach(alert => {
+            let marker = L.marker([alert["latitude"], alert["longitude"]]).addTo(map)
+            marker.on("click", () => {
+                window.location.href = `/alert/${alert.id}`
+            })
+        })
 
         let toggleMap = () => {
             document.querySelector("#camera-button").classList.toggle("active")
             document.querySelector("#map-button").classList.toggle("active")
             document.querySelector("#camera").classList.toggle("d-none")
             document.querySelector("#map").classList.toggle("d-none")
-        }
-
-        let showMap = () => {
-            document.querySelector("#camera-button").classList.remove("active")
-            document.querySelector("#map-button").classList.add("active")
-            document.querySelector("#camera").setAttribute("hidden", true)
-            document.querySelector("#map").setAttribute("hidden", false)
-        }
-
-        let showCamera = () => {
-            document.querySelector("#camera-button").classList.add("active")
-            document.querySelector("#map-button").classList.remove("active")
-            document.querySelector("#camera").setAttribute("hidden", false)
-            document.querySelector("#map").setAttribute("hidden", true)
         }
     </script>
 </body>

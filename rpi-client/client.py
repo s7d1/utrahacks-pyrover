@@ -8,12 +8,15 @@ import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from itertools import islice # for slicing an iterator
 import serial
+from random import uniform
+from datetime import datetime
 
 port = '/dev/ttyACM0'
 
 ser = serial.Serial(port, 9600, timeout=1)
 
 ser.flush()
+
 
 def camera_frame():
     capture = cv2.VideoCapture(0)
@@ -47,8 +50,9 @@ def fire_detection(frame_path):
             fields={
                 'confidence': str(prediction['predictions'][0]['confidence']),
                 'time': str(timestamp),
-                'position': ("Latitude, Longitude"),
-                'temperature': str(100),
+                'latitude': str(43.6606491 + uniform(-0.00003, 0.00003)),
+                'longitude': str(-79.3964662 + uniform(-0.00003, 0.00003)),
+                'temperature': str(100.0),
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
         )
@@ -73,8 +77,9 @@ if __name__ == '__main__':
     rf = Roboflow(api_key=ROBOFLOW_KEY)
     project = rf.workspace().project("firebot")
     model = project.version(1).model
-    
-    for frame in islice(camera_frame(), 1): # for testing purposes to not use up all allowed inference requests
+    last_detection = datetime.now()
+
+    for frame in camera_frame(): # for testing purposes to not use up all allowed inference requests
         frame_path = "live.jpeg"
         write_frame_to_file(frame, frame_path)
         # Add a delay to ensure the file is fully written
@@ -88,4 +93,6 @@ if __name__ == '__main__':
         if response.status_code != 200:
                 print('Failed to send frame: ', response.__dict__)
 
-        fire_detection(frame_path)
+        if (datetime.now() - last_detection).total_seconds() > 10:
+            last_detection = datetime.now()
+            fire_detection(frame_path)

@@ -5,20 +5,27 @@ from werkzeug.datastructures import FileStorage
 
 
 app = Flask(__name__)
+live_frame = None
+alerts = [{
+    "id": 0,
+    "confidence": 0.99,
+    "time": "2024-01-20 20:54:41.786741",
+    "latitude": 43.6607378,
+    "longitude": -79.396058,
+    "temperature": 100.0,
+    "file_path": "/static/fire/0.jpeg"
+}]
 
 
 @app.route("/")
 def index_page():
-    return render_template("index.html")
+    return render_template("index.html", alerts=alerts)
 
 
 @app.route("/alert/<int:id>")
 def alert_page(id):
-    return render_template("alert.html")
+    return render_template("alert.html", alert=alerts[id])
 
-
-live_frame = None
-alerts = []
 
 def gen_frames():
     global live_frame
@@ -52,7 +59,8 @@ def fire():
     # Access form data
     confidence = request.form.get('confidence')
     time = request.form.get('time')
-    position = request.form.get('position')
+    latitude = request.form.get('latitude')
+    longitude = request.form.get('longitude')
     temperature = request.form.get('temperature')
     
     # Access the file
@@ -62,11 +70,12 @@ def fire():
         frame.save("./static/fire/" + str(id) + ".jpeg")
     alerts.append({
         "id": id,
-        "confidence": confidence,
+        "confidence": float(confidence),
         "time": time,
-        "position": position,
-        "temperature": temperature,
-        "file_path": "./static/" + str(id) + ".jpeg"
+        "latitude": float(latitude),
+        "longitude": float(longitude),
+        "temperature": float(temperature),
+        "file_path": "/static/fire/" + str(id) + ".jpeg"
     })
     return "Alert received"
 
