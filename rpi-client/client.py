@@ -28,7 +28,7 @@ def write_frame_to_file(frame, file_path):
     with open(file_path, 'wb') as f:
         f.write(image_data)
 
-def fire_detection(frame, frame_path):
+def fire_detection(frame_path):
     '''
     Detects fire in the frame and creates a POST request to the server with the frame and the prediction result.
     '''
@@ -44,7 +44,7 @@ def fire_detection(frame, frame_path):
                 'frame': (frame_path, open(frame_path, 'rb'))
             }
         )
-        response = requests.post('http://15-222-245-42:80/fire', data=mp_encoder, headers={'Content-Type': mp_encoder.content_type}) 
+        response = requests.post('http://15.222.245.42:80/fire', data=mp_encoder, headers={'Content-Type': mp_encoder.content_type}) 
         if response.status_code != 200:
             print('Failed to send frame: ', response.text)
             return
@@ -61,16 +61,17 @@ if __name__ == '__main__':
     model = project.version(1).model
     
     for frame in islice(camera_frame(), 1): # for testing purposes to not use up all allowed inference requests
-        write_frame_to_file(frame, "frame.jpeg")
+        frame_path = "live.jpeg"
+        write_frame_to_file(frame, frame_path)
         # Add a delay to ensure the file is fully written
         time.sleep(0.5)
-        if not os.path.exists("frame.jpeg"):
+        if not os.path.exists(frame_path):
             print("File not found.")
             continue
-        
+        file = {'live.jpeg': (frame_path, open(frame_path, 'rb'))}
         # Send the frame to the server at camera endpoint
-        response = requests.post('http://15-222-245-42:80/camera', data=frame)
+        response = requests.post('http://15.222.245.42:80/camera', files=file)
         if response.status_code != 200:
-                print('Failed to send frame: ', response.text)
+                print('Failed to send frame: ', response.__dict__)
 
-        fire_detection(frame, "frame.jpeg")
+        fire_detection(frame_path)
