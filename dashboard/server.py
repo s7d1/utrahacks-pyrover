@@ -66,7 +66,7 @@ def fire():
         "time": time,
         "position": position,
         "temperature": temperature,
-        "file_path": "./static/fire/" + str(id) + ".jpeg"
+        "file_path": "./static/" + str(id) + ".jpeg"
     })
 
 
