@@ -8,6 +8,7 @@ import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from itertools import islice # for slicing an iterator
 from random import uniform
+from datetime import datetime
 
 
 def camera_frame():
@@ -63,8 +64,9 @@ if __name__ == '__main__':
     rf = Roboflow(api_key=ROBOFLOW_KEY)
     project = rf.workspace().project("firebot")
     model = project.version(1).model
-    
-    for frame in islice(camera_frame(), 5): # for testing purposes to not use up all allowed inference requests
+    last_detection = datetime.now()
+
+    for frame in camera_frame(): # for testing purposes to not use up all allowed inference requests
         frame_path = "live.jpeg"
         write_frame_to_file(frame, frame_path)
         # Add a delay to ensure the file is fully written
@@ -78,4 +80,6 @@ if __name__ == '__main__':
         if response.status_code != 200:
                 print('Failed to send frame: ', response.__dict__)
 
-        fire_detection(frame_path)
+        if (datetime.now() - last_detection).total_seconds() > 10:
+            last_detection = datetime.now()
+            fire_detection(frame_path)
