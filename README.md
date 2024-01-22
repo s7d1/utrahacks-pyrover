@@ -41,3 +41,14 @@ Enhance the rover's capabilities by transforming it into a fire-resistant drone,
 Create a network of Pyrovers capable of navigating our forests efficiently and update their paths if some Pyrover(s) are damaged/trapped.
 
 [Presentation](https://www.canva.com/design/DAF6hKpbGVw/DEAj4yuI4_5vQIQMaKEfow/view?utm_content=DAF6hKpbGVw&utm_campaign=share_your_design&utm_medium=link&utm_source=shareyourdesignpanel)
+
+## Contributors
+A big thank you to everyone who has contributed to this project!
+
+- [Ayaz](https://github.com/ayaz-amin)
+- [Chaoyu](https://github.com/7up11)
+- [Hieu](https://github.com/gheuxucpam)
+- [Mariem](https://github.com/mariemahmed250)
+- [Matteo](https://github.com/MatteoGuidii)
+- [Saksham](https://github.com/s7d1)
+
